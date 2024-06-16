@@ -1,19 +1,19 @@
 <template>
   <UPage>
     <UContainer>
-      <div class="my-6">
-        <UButton label="Back" icon="i-heroicons-arrow-left" color="white" @click="router.back()"/>
+      <div class="my-2 md:my-6">
+        <UButton class="py-2 px-4 text-sm md:py-3 md:px-6 md:text-base" label="Back" icon="i-heroicons-arrow-left" color="white" @click="router.back()"/>
       </div>
       <div v-if="loading">Loading...</div>
       <div v-else-if="selectedCountry === null">Error: Failed to load country data.</div>
       <div v-else>
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <img :src="selectedCountry.flags.svg" :alt="`Flag of ${selectedCountry.name.common}`" class="w-full h-auto object-contain"/>
           </div>
-          <div class="m-8">
-            <h3 class="text-4xl font-extrabold text-gray-900">{{ selectedCountry.name.common }}</h3>
-            <div class="flex flex-row mt-4 gap-4">
+          <div class="m-4 md:m-8">
+            <h3 class="text-2xl md:text-4xl font-extrabold text-gray-900">{{ selectedCountry.name.common }}</h3>
+            <div class="flex flex-col md:flex-row mt-4 gap-4">
               <div>
                 <div class="mb-2"><strong>Native Name:</strong> {{ nativeName }}</div>
                 <div class="mb-2"><strong>Population:</strong> {{ selectedCountry.population.toLocaleString() }}</div>
@@ -27,10 +27,10 @@
                 <div><strong>Languages:</strong> {{ Object.values(selectedCountry.languages).join(', ') }}</div>
               </div>
             </div>
-            <div class="flex gap-2 mt-4">
+            <div class="flex flex-wrap gap-2 mt-4">
               <strong>Border Countries:</strong>
-              <div v-for="border in borderCountryNames" :key="border" class="flex flex-wrap">
-                <UButton :label="border" @click="navigateTo('/country/' + border)" color="white"  />
+              <div v-for="border in borderCountryNames" :key="border">
+                <UButton :label="border" @click="navigateTo('/country/' + border)" class="py-1 px-2 text-xs md:py-2 md:px-4 md:text-sm" color="white" />
               </div>
             </div>
           </div>
