@@ -20,10 +20,7 @@
 </template>
 <script setup lang="ts">
 const countryStore = useCountryStore();
-onMounted(async() => {
-  await  nextTick();
-  await countryStore.fetchCountries();
-})
+await countryStore.fetchCountries();
 const links = [{
   label: 'Documentation',
   icon: 'i-heroicons-book-open',

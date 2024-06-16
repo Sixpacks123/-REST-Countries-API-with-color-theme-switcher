@@ -29,7 +29,7 @@
             </div>
             <div class="flex gap-2 mt-4">
               <strong>Border Countries:</strong>
-              <div v-for="border in selectedCountry.borderCountryNames" :key="border">
+              <div v-for="border in selectedCountry.borders" :key="border">
                 <UBadge :label="border" color="white"  />
               </div>
             </div>
@@ -39,7 +39,6 @@
     </UContainer>
   </UPage>
 </template>
-
 <script setup>
 import {computed} from 'vue';
 
@@ -55,8 +54,6 @@ const selectedCountry = computed(() => countryStore.selectedCountry);
 
   }
 
-
-
 onBeforeUnmount(()=>{
   countryStore.resetSelectedCountry()
 })
@@ -68,7 +65,5 @@ const nativeName = computed(() => {
   const nativeNames = selectedCountry.value?.name.nativeName;
   return nativeNames && nativeNames['fra'] ? `${nativeNames['fra'].common} (${nativeNames['fra'].official})` : 'No native name available';
 });
-
-
 
 </script>
