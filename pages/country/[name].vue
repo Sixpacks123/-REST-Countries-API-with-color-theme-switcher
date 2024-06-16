@@ -29,8 +29,8 @@
             </div>
             <div class="flex gap-2 mt-4">
               <strong>Border Countries:</strong>
-              <div v-for="border in selectedCountry.borders" :key="border">
-                <UBadge :label="border" color="white"  />
+              <div v-for="border in borderCountryNames" :key="border" class="flex flex-wrap">
+                <UButton :label="border" @click="navigateTo('/country/' + border)" color="white"  />
               </div>
             </div>
           </div>
@@ -40,30 +40,41 @@
   </UPage>
 </template>
 <script setup>
-import {computed} from 'vue';
 
-const route = useRoute();
 const router = useRouter();
+const route = useRoute();
 const countryStore = useCountryStore();
 const loading = computed(() => countryStore.loading);
 const selectedCountry = computed(() => countryStore.selectedCountry);
+const borderCountryNames = ref({});
 
-// On component mount
-  if (!countryStore.selectedCountry || route.params.name !== countryStore.selectedCountry.name.common) {
+// Fetch country on mount and when route changes
+  if (!selectedCountry.value || route.params.name !== selectedCountry.value.name.common) {
     await countryStore.fetchCountryByName(route.params.name);
-
   }
 
-onBeforeUnmount(()=>{
-  countryStore.resetSelectedCountry()
-})
+// Watch selectedCountry to update border names
+watch(selectedCountry, async (newCountry) => {
+  if (newCountry && newCountry.borders) {
+    const names = {};
+    for (const code of newCountry.borders) {
+      const country = await countryStore.fetchCountryByAlpha(code);
+      names[code] = country ? country.name.common : 'Unknown';
+    }
+    borderCountryNames.value = names;
+  }
+}, { immediate: true });
+
+const nativeName = computed(() => {
+  const names = selectedCountry.value?.name.nativeName;
+  return names && names['fra'] ? `${names['fra'].common} (${names['fra'].official})` : 'No native name available';
+});
 
 function formatCurrencies(currencies) {
   return Object.values(currencies).map(c => `${c.name} (${c.symbol})`).join(', ');
 }
-const nativeName = computed(() => {
-  const nativeNames = selectedCountry.value?.name.nativeName;
-  return nativeNames && nativeNames['fra'] ? `${nativeNames['fra'].common} (${nativeNames['fra'].official})` : 'No native name available';
-});
 
+function navigateBack() {
+  router.back();
+}
 </script>

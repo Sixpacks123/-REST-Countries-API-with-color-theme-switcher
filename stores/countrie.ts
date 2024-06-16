@@ -80,12 +80,36 @@ export const useCountryStore = defineStore('country', () => {
         selectedCountry.value = null;  // Réinitialiser le pays sélectionné
     };
 
+    // Fetch country by alpha code
+    const fetchCountryByAlpha = async (alphaCode: string) => {
+        loading.value = true;
+        try {
+            const { data } = await useFetch<Country[]>(`https://restcountries.com/v3.1/alpha/${alphaCode}`, { immediate: true });
+            loading.value = false;
+            if (data.value && data.value.length > 0) {
+                const country = data.value[0]; // Extraction du premier élément du tableau
+                return country;
+            } else {
+                console.error('No country found for this code:', alphaCode);
+                return null;
+            }
+        } catch (error) {
+            console.error(`Failed to fetch country by alpha code: ${alphaCode}`, error);
+            return null;
+        } finally {
+            loading.value = false;
+        }
+    };
+
+
+
     return {
         countries,
         loading,
         selectedCountry,
         fetchCountries,
         fetchCountryByName,
-        resetSelectedCountry
+        resetSelectedCountry,
+        fetchCountryByAlpha
     };
 });
